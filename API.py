@@ -1,11 +1,13 @@
+import os
 import streamlit as st
 from datetime import datetime
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, initialize_app
 from base import obter_base  # Importa a função obter_base de outro arquivo
 
 # Inicializar o Firebase
-cred = credentials.Certificate("firebase-key.json")  # Caminho do seu arquivo de credenciais do Firebase
+key_path = os.getenv('FIREBASE_KEY')
+cred = credentials.Certificate(key_path)
 if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
 
