@@ -16,7 +16,7 @@ def obter_chave_firebase():
         f = Fernet(DECRYPT_KEY.encode())
 
         # Ler o arquivo criptografado
-        with open("../chave.json.enc", "rb") as enc_file:
+        with open("./chave.json.enc", "rb") as enc_file:
             encrypted_data = enc_file.read()
 
         # Descriptografar a chave
