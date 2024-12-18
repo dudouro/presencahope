@@ -44,7 +44,7 @@ except Exception as e:
     st.error(f"Erro ao inicializar Firebase: {e}")
     raise e
 
-def salvar_presenca(celula, data, membros_presentes, horario_insercao):
+def salvar_presenca(celula, data, membros_presentes, horario_insercao, responsavel):
     try:
         presenca_ref = db.collection("celulas_presenca")
 
@@ -69,7 +69,8 @@ def salvar_presenca(celula, data, membros_presentes, horario_insercao):
             "celula": celula,
             "data": data,  # Data da célula
             "membros_presentes": membros_presentes,  # Membros presentes
-            "horario_insercao": horario_insercao  # Horário da inserção
+            "horario_insercao": horario_insercao,  # Horário da inserção
+            "responsavel": responsavel  # Nome do responsável pela chamada
         })
         
         print(f"Presença salva com sucesso! ID do documento: {documento_id}")
@@ -80,7 +81,6 @@ def salvar_presenca(celula, data, membros_presentes, horario_insercao):
     except Exception as e:
         print(f"Erro ao salvar presença: {e}")
         st.error(f"Erro ao salvar presença: {e}")  # Exibir erro no caso de falha
-
 
 # Interface com Streamlit
 st.title("Controle de Presença - Células")
@@ -95,6 +95,10 @@ celula_selecionada = st.selectbox("Selecione a célula", celulas)
 # Selecionar data
 data_selecionada = st.date_input("Selecione a data", datetime.now().date())
 
+# Selecionar responsável pela chamada
+responsaveis = ["Lucas", "Jhow", "Larissa", "Vitória"]  # Lista de opções de responsáveis
+responsavel_selecionado = st.selectbox("Selecione o responsável pela chamada", responsaveis)
+
 # Carregar membros da célula selecionada
 if celula_selecionada:
     st.subheader(f"Membros da célula: {celula_selecionada}")
@@ -106,6 +110,12 @@ if celula_selecionada:
         # Salvar presença no Firebase
         if st.button("Salvar Presença"):
             horario_insercao = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Horário da inserção
-            salvar_presenca(celula_selecionada, str(data_selecionada), membros_presentes, horario_insercao)
+            salvar_presenca(
+                celula=celula_selecionada, 
+                data=str(data_selecionada), 
+                membros_presentes=membros_presentes, 
+                horario_insercao=horario_insercao, 
+                responsavel=responsavel_selecionado
+            )
     else:
         st.warning("Nenhum membro encontrado para esta célula.")
